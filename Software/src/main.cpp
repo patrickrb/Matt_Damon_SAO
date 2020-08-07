@@ -1,45 +1,92 @@
 #include <Arduino.h>
-// LED Flicking candle flame effect to PIMP DAT PUMPKIN
 
-/*
- Halloween 2016 Barry Wise
- 
-  Borrowed and enhanced code from:
-      http://www.instructables.com/id/Realistic-Fire-Effect-with-Arduino-and-LEDs
-  
-  Made ATTINY85 shield for Arduino like this:
-      https://www.youtube.com/watch?v=9LjfkjwMqXI
-  
-  How to use Arduino as ISP for programming via said shield:
-      http://www.kobakant.at/DIY/?p=3742
+int blinkPin1 = 0; //bottom right orange
+int blinkPin2 = 1; //bottom left yellow
+int blinkPin3 = 2; //left red
+int blinkPin4 = 4; // right blue
+int blinkPin5 = 3; //top red
 
-*/
+int brightness = 0; 
+int fadeAmount = 5;    
 
-int ledPin1 = 0;
-int ledPin2 = 1;
-int ledPin3 = 2;
-
-void setup() {
-
-  pinMode(ledPin1, OUTPUT);
-  pinMode(ledPin2, OUTPUT);
-  pinMode(ledPin3, OUTPUT);
-  
+void setup()
+{
+  pinMode(blinkPin1, OUTPUT);
+  pinMode(blinkPin2, OUTPUT);
+  pinMode(blinkPin3, OUTPUT);
+  pinMode(blinkPin4, OUTPUT);
+  pinMode(blinkPin5, OUTPUT);
 }
 
-void loop() {
-
-  // analogWrite(ledPin1, random(50)+200);
-  // analogWrite(ledPin2, random(80)+170);
-  analogWrite(ledPin1, random(250));
-  analogWrite(ledPin2, random(250));
-  
-
-  digitalWrite(ledPin3, HIGH);   
-  
-  delay(random(200));
-
-  digitalWrite(ledPin3, LOW);   
-
-
+void blink() {
+  digitalWrite(blinkPin1, HIGH);
+  digitalWrite(blinkPin2, LOW);
+  digitalWrite(blinkPin3, LOW);
+  digitalWrite(blinkPin4, LOW);
+  digitalWrite(blinkPin5, LOW);
+  delay(100);
+  digitalWrite(blinkPin1, LOW);
+  digitalWrite(blinkPin2, HIGH);
+  digitalWrite(blinkPin3, LOW);
+  digitalWrite(blinkPin4, LOW);
+  digitalWrite(blinkPin5, LOW);
+  delay(100);
+  digitalWrite(blinkPin1, LOW);
+  digitalWrite(blinkPin2, LOW);
+  digitalWrite(blinkPin3, HIGH);
+  digitalWrite(blinkPin4, LOW);
+  digitalWrite(blinkPin5, LOW);
+  delay(100);
+  digitalWrite(blinkPin1, LOW);
+  digitalWrite(blinkPin2, LOW);
+  digitalWrite(blinkPin3, LOW);
+  digitalWrite(blinkPin4, HIGH);
+  digitalWrite(blinkPin5, LOW);
+  delay(100);
+  digitalWrite(blinkPin1, LOW);
+  digitalWrite(blinkPin2, LOW);
+  digitalWrite(blinkPin3, LOW);
+  digitalWrite(blinkPin4, LOW);
+  digitalWrite(blinkPin5, HIGH);
+  delay(100);
 }
+
+void flicker() {
+  analogWrite(blinkPin1, random(250));
+  analogWrite(blinkPin2, random(250));
+  analogWrite(blinkPin3, random(250));
+  analogWrite(blinkPin4, random(250));
+  analogWrite(blinkPin5, random(250));  
+  delay(random(100));
+}
+
+void pwm() {
+  analogWrite(blinkPin1, brightness);
+  analogWrite(blinkPin2, brightness);
+  analogWrite(blinkPin3, brightness);
+  analogWrite(blinkPin4, brightness);
+  analogWrite(blinkPin5, brightness);
+
+  brightness = brightness + fadeAmount;
+
+  if (brightness <= 0 || brightness >= 255) {
+    fadeAmount = -fadeAmount;
+  }
+  delay(30);
+}
+
+void loop()
+{
+  for(int loops = 0; loops < 10; loops++) {
+    blink();
+  }
+
+  for(int loops = 0; loops < 125; loops++){
+    flicker();
+  }
+
+  for(int loops = 0; loops < 200; loops++){
+    pwm();
+  }
+}
+
